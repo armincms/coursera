@@ -9,8 +9,9 @@
     "require": {
         "php": ">=7.1.0", 
         "armincms/categorizable": "^2.2",
-        "armin-widget/slider": "*",
-        "whitecube/nova-flexible-content": "~0.2.10"
+        "phoenix-lib/nova-nested-tree-attach-many": "^1.8",
+        "whitecube/nova-flexible-content": "~0.2.10",
+        "armin-widget/slider": "*"
     },
     "autoload": {
         "psr-4": {
