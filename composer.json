@@ -1,0 +1,31 @@
+{
+    "name": "armincms/coursera",
+    "description": "A Laravel Nova tool.",
+    "keywords": [
+        "laravel",
+        "nova"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.1.0",
+        "armin-widget/slider": "*",
+        "whitecube/nova-flexible-content": "~0.2.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Armincms\\Coursera\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Armincms\\Coursera\\ServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
