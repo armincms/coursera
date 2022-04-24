@@ -72,6 +72,7 @@ class Lesson extends Resource
             Flexible::make(__('Coursera Media Links'), 'content')
                 ->resolver(\Armincms\Coursera\Nova\Flexible\Resolvers\Links::class)
                 ->onlyOnForms()
+                ->button(__('Coursera Add Link'))
                 ->addLayout('Coursera Media Link', 'items', [
                     
                     Select::make(__('Coursera Server'), 'server_id')
