@@ -56,6 +56,8 @@ class Episode extends Resource
                 ->min(0)
                 ->max(99),
 
+            $this->medialibrary(__('Episode Image')),
+
             Textarea::make(__('Episode Summary'), 'summary')->hideFromIndex()->nullable(),
 
             HasMany::make(__('Coursera Lessons'), 'lessons', Lesson::class),

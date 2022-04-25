@@ -3,13 +3,16 @@
 namespace Armincms\Coursera\Models;
 
 use Armincms\Contract\Concerns\Authorizable;  
-use Armincms\Contract\Contracts\Authenticatable;  
+use Armincms\Contract\Concerns\InteractsWithMedia; 
+use Armincms\Contract\Contracts\Authenticatable;
+use Armincms\Contract\Contracts\HasMedia;  
 use Illuminate\Database\Eloquent\Model; 
 use Illuminate\Database\Eloquent\SoftDeletes; 
 
-class CourseraEpisode extends Model implements Authenticatable
+class CourseraEpisode extends Model implements Authenticatable, HasMedia
 {    
     use Authorizable; 
+    use InteractsWithMedia; 
     use SoftDeletes;       
     
     /**

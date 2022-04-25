@@ -67,6 +67,8 @@ class Lesson extends Resource
                 ->min(0)
                 ->max(99),
 
+            $this->medialibrary(__('Lesson Image')),
+
             Textarea::make(__('Lesson Summary'), 'summary')->hideFromIndex()->nullable(),
 
             Flexible::make(__('Coursera Media Links'), 'content')

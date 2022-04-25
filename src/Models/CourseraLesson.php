@@ -6,19 +6,23 @@ use Armincms\Contract\Concerns\Authorizable;
 use Armincms\Contract\Concerns\Configurable; 
 use Armincms\Contract\Concerns\HasHits; 
 use Armincms\Contract\Concerns\InteractsWithFragments; 
+use Armincms\Contract\Concerns\InteractsWithMedia;
 use Armincms\Contract\Concerns\InteractsWithUri; 
 use Armincms\Contract\Concerns\Sluggable;
 use Armincms\Contract\Contracts\Authenticatable; 
+
+use Armincms\Contract\Contracts\HasMedia;  
 use Armincms\Contract\Contracts\Hitsable; 
 use Illuminate\Database\Eloquent\Model; 
 use Illuminate\Database\Eloquent\SoftDeletes; 
 
-class CourseraLesson extends Model implements Authenticatable , Hitsable
+class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsable
 {    
     use Authorizable;
     use Configurable;
     use HasHits; 
     use InteractsWithFragments;
+    use InteractsWithMedia;
     use InteractsWithUri;
     use SoftDeletes;    
     use Sluggable;       
