@@ -55,6 +55,8 @@ class Course extends Resource
 
             $this->resourceUrls(),
 
+            $this->currencyField(__('Course Price')),
+
             CategorySelect::make(__('Course Category'), 'category_id', Category::class)
                 ->required()
                 ->useAsField()
