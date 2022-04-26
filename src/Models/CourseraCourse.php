@@ -8,6 +8,7 @@ use Armincms\Contract\Concerns\InteractsWithFragments;
 use Armincms\Contract\Concerns\InteractsWithMedia;
 use Armincms\Contract\Concerns\InteractsWithMeta;
 use Armincms\Contract\Concerns\InteractsWithUri; 
+use Armincms\Contract\Concerns\InteractsWithWidgets;
 use Armincms\Contract\Concerns\Sluggable;
 use Armincms\Contract\Contracts\Authenticatable;
 use Armincms\Contract\Contracts\HasMedia;
@@ -24,6 +25,7 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     use InteractsWithMedia;
     use InteractsWithMeta;
     use InteractsWithUri;
+    use InteractsWithWidgets;
     use SoftDeletes;    
     use Sluggable;    
     
@@ -54,6 +56,40 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
      */
     public function cypressFragment(): string
     {
-        return \Armincms\Coursera\Cypress\Fragments\Course::class;
+        return \Armincms\Coursera\Cypress\Fragments\CourseDetail::class;
+    }
+
+    /**
+     * Serialize the model to pass into the client view for single item.
+     *
+     * @param Zareismail\Cypress\Request\CypressRequest
+     * @return array
+     */
+    public function serializeForDetailWidget($request)
+    {
+        return array_merge($this->serializeForIndexWidget($request), [
+            'content' => $this->content,
+            'episodes' => $this->episodes->map->serializeForWidget($request)->toArray(),
+        ]);
+    }
+
+    /**
+     * Serialize the model to pass into the client view for collection of items.
+     *
+     * @param Zareismail\Cypress\Request\CypressRequest
+     * @return array
+     */
+    public function serializeForIndexWidget($request)
+    {
+        return [
+            'id'        => $this->getKey(),
+            'name'      => $this->name,
+            'price'     => $this->price,
+            'summary'   => $this->summary,
+            'url'       => $this->getUrl($request),
+            'hits'      => $this->hits,
+            'category'  => (array) optional($this->category)->serializeForIndexWidget($request),
+            'images'    => $this->getFirstMediasWithConversions()->get('image'),
+        ];
     }
 }

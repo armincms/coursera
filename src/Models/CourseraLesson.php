@@ -8,6 +8,7 @@ use Armincms\Contract\Concerns\HasHits;
 use Armincms\Contract\Concerns\InteractsWithFragments; 
 use Armincms\Contract\Concerns\InteractsWithMedia;
 use Armincms\Contract\Concerns\InteractsWithUri; 
+use Armincms\Contract\Concerns\InteractsWithWidgets; 
 use Armincms\Contract\Concerns\Sluggable;
 use Armincms\Contract\Contracts\Authenticatable; 
 
@@ -24,6 +25,7 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
     use InteractsWithFragments;
     use InteractsWithMedia;
     use InteractsWithUri;
+    use InteractsWithWidgets;
     use SoftDeletes;    
     use Sluggable;       
     
@@ -54,6 +56,37 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
      */
     public function cypressFragment(): string
     {
-        return \Armincms\Coursera\Cypress\Fragments\Course::class;
+        return \Armincms\Coursera\Cypress\Fragments\LessonDetail::class;
+    }
+
+    /**
+     * Serialize the model to pass into the client view for single item.
+     *
+     * @param Zareismail\Cypress\Request\CypressRequest
+     * @return array
+     */
+    public function serializeForDetailWidget($request)
+    {
+        return array_merge($this->serializeForIndexWidget($request), [
+            'links' => $this->links->toArray(), 
+        ]);
+    }
+
+    /**
+     * Serialize the model to pass into the client view for collection of items.
+     *
+     * @param Zareismail\Cypress\Request\CypressRequest
+     * @return array
+     */
+    public function serializeForIndexWidget($request)
+    {
+        return [
+            'id'        => $this->getKey(),
+            'name'      => $this->name, 
+            'order'      => $this->order, 
+            'summary'   => $this->summary, 
+            'url'       => $this->getUrl($request), 
+            'images'    => $this->getFirstMediasWithConversions()->get('image'),
+        ];
     }
 }

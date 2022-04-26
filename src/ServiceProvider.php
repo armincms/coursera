@@ -5,6 +5,7 @@ namespace Armincms\Coursera;
 use Illuminate\Contracts\Support\DeferrableProvider;  
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider; 
 use Laravel\Nova\Nova as LaravelNova;
+use Zareismail\Gutenberg\Gutenberg;
 
 class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
 { 
@@ -33,9 +34,9 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
         // $this->conversions();
         $this->resources();
         // $this->components();
-        // $this->fragments();
-        // $this->widgets();
-        // $this->templates();
+        $this->fragments();
+        $this->widgets();
+        $this->templates();
         // $this->menus();
     }
 
@@ -48,10 +49,52 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
     { 
         LaravelNova::resources([
             Nova\Course::class, 
+            Nova\CourseCategory::class, 
             Nova\Episode::class, 
             Nova\Lesson::class, 
             Nova\Link::class, 
             Nova\Server::class, 
+        ]);
+    }
+
+    /**
+     * Register the application's Gutenberg fragments.
+     *
+     * @return void
+     */
+    protected function fragments()
+    {   
+        Gutenberg::fragments([
+            Cypress\Fragments\CourseDetail::class,
+            Cypress\Fragments\LessonDetail::class,
+        ]);
+    }
+
+    /**
+     * Register the application's Gutenberg widgets.
+     *
+     * @return void
+     */
+    protected function widgets()
+    {
+        Gutenberg::widgets([
+            Cypress\Widgets\CourseDetail::class,
+            Cypress\Widgets\CoursesCard::class,
+            Cypress\Widgets\LessonDetail::class,
+        ]);
+    }
+
+    /**
+     * Register the application's Gutenberg templates.
+     *
+     * @return void
+     */
+    protected function templates()
+    {   
+        Gutenberg::templates([ 
+            \Armincms\Coursera\Gutenberg\Templates\CourseDetail::class,
+            \Armincms\Coursera\Gutenberg\Templates\CoursesCard::class,
+            \Armincms\Coursera\Gutenberg\Templates\LessonDetail::class,
         ]);
     }
 

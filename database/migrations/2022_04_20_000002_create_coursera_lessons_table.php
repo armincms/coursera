@@ -18,6 +18,7 @@ class CreateCourseraLessonsTable extends Migration
             $table->summary(); 
             $table->longPrice();  
             $table->configuration(); 
+            $table->resourceHits(); 
             $table->tinyInteger('order')->default(0);   
             $table->foreignId('episode_id')->constrained('coursera_episodes');  
             $table->softDeletes(); 
