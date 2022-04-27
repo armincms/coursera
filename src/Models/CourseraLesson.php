@@ -60,16 +60,14 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
     }
 
     /**
-     * Determin that the user can display lesson.
+     * Determin that the lesson is free to access.
      * 
      * @param   $request 
      * @return boolean          
      */
-    public function authorizedToView($request)
+    public function isFree()
     {
-        $course = data_get($this->episode, 'course');
-
-        return $this->config('free', false) || optional($course)->subscribed($request->user());
+        return boolval($this->config('free', false));
     }
 
     /**
@@ -83,8 +81,9 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
         $course = data_get($this->episode, 'course');
 
         return array_merge($this->serializeForIndexWidget($request), [
-            'authorized'=> $authorized = $this->authorizedToView($request), 
-            'links'     => $authorized ? $this->links->toArray() : [],
+            'subscribed'=> $subscribed = optional($course)->subscribed($request), 
+            'isFree'    => $this->isFree(), 
+            'links'     => $this->isFree() || $subscribed ? $this->links->toArray() : [],
             'episode'   => optional($this->episode)->serializeForDetailWidget($request), 
             'course'    => optional($course)->serializeForDetailWidget($request),
         ]);
