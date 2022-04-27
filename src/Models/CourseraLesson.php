@@ -68,7 +68,9 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
     public function serializeForDetailWidget($request)
     {
         return array_merge($this->serializeForIndexWidget($request), [
-            'links' => $this->links->toArray(), 
+            'links' => $this->links->toArray(),
+            'episode' => optional($this->episode)->serializeForDetailWidget($request), 
+            'course' => optional(data_get($this->episode, 'course'))->serializeForDetailWidget($request), 
         ]);
     }
 

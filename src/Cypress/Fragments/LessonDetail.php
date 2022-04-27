@@ -30,9 +30,7 @@ class LessonDetail extends Fragment implements Resolvable, Resource
      */
     public function applyQuery($request, $query)
     {
-        return $query->unless(\Auth::guard('admin')->check(), function($query) {
-            // return $query->published();
-        });
+        return $query->with('episode.course');
     } 
 
     /**
@@ -45,7 +43,7 @@ class LessonDetail extends Fragment implements Resolvable, Resource
         $request = app(\Zareismail\Cypress\Http\Requests\CypressRequest::class);
 
         return array_merge(parent::jsonSerialize(), [
-            'resource' => $this->metaValue('resource')->serializeForDetailWidget($request)
+            'resource' => $this->metaValue('resource')->serializeForDetailWidget($request),
         ]);
     } 
 }
