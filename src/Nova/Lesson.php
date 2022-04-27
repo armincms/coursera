@@ -4,6 +4,7 @@ namespace Armincms\Coursera\Nova;
  
 use Illuminate\Http\Request;  
 use Laravel\Nova\Fields\BelongsTo; 
+use Laravel\Nova\Fields\Boolean; 
 use Laravel\Nova\Fields\HasMany; 
 use Laravel\Nova\Fields\ID;       
 use Laravel\Nova\Fields\Number;   
@@ -66,6 +67,16 @@ class Lesson extends Resource
                 ->rules('required')
                 ->min(0)
                 ->max(99),
+
+            Boolean::make(__('Lesson IS Free'), 'config->free')
+                ->default(false)
+                ->sortable()
+                ->help(__('Determine that everyone can view the lesson.')),
+
+            Boolean::make(__('Lesson Is Downloadable'), 'config->download')
+                ->default(false)
+                ->sortable()
+                ->help(__('Determine that user can download the lesson media.')),
 
             $this->medialibrary(__('Lesson Image')),
 

@@ -48,6 +48,41 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     {
         return $this->hasMany(CourseraEpisode::class, 'course_id');
     }
+    
+    /**
+     * Query related CourseraServer.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relatinos\BelongsTo
+     */
+    public function subscribers()
+    {
+        return $this->belongsToMany(
+            config('auth.providers.users.model'), 
+            'coursera_subscriptions'
+        );
+    } 
+
+    /**
+     * Subscribe given user to the course.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Model $user 
+     * @return mixed
+     */
+    public function subscribe($user)
+    {
+        return $this->subscribers()->attach($user);
+    }
+
+    /**
+     * Determin that given user subscribed to the course.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Model $user 
+     * @return boolean       
+     */
+    public function subscribed($user = null)
+    {
+        return ! is_null($user) && $this->subscribers->contains($user);
+    }
 
     /**
      * Get the corresponding cypress fragment.
@@ -68,8 +103,9 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     public function serializeForDetailWidget($request)
     {
         return array_merge($this->serializeForIndexWidget($request), [
-            'content' => $this->content,
-            'episodes' => $this->episodes->map->serializeForWidget($request)->toArray(),
+            'subscribed'=> $this->subscribed($request->user()),
+            'content'   => $this->content,
+            'episodes'  => $this->episodes->map->serializeForWidget($request)->toArray(),
         ]);
     }
 

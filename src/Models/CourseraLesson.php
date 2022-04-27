@@ -60,6 +60,19 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
     }
 
     /**
+     * Determin that the user can display lesson.
+     * 
+     * @param   $request 
+     * @return boolean          
+     */
+    public function authorizedToView($request)
+    {
+        $course = data_get($this->episode, 'course');
+
+        return $this->config('free', false) || optional($course)->subscribed($request->user());
+    }
+
+    /**
      * Serialize the model to pass into the client view for single item.
      *
      * @param Zareismail\Cypress\Request\CypressRequest
@@ -67,10 +80,13 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
      */
     public function serializeForDetailWidget($request)
     {
+        $course = data_get($this->episode, 'course');
+
         return array_merge($this->serializeForIndexWidget($request), [
-            'links' => $this->links->toArray(),
-            'episode' => optional($this->episode)->serializeForDetailWidget($request), 
-            'course' => optional(data_get($this->episode, 'course'))->serializeForDetailWidget($request), 
+            'authorized'=> $authorized = $this->authorizedToView($request), 
+            'links'     => $authorized ? $this->links->toArray() : [],
+            'episode'   => optional($this->episode)->serializeForDetailWidget($request), 
+            'course'    => optional($course)->serializeForDetailWidget($request),
         ]);
     }
 
@@ -85,10 +101,10 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
         return [
             'id'        => $this->getKey(),
             'name'      => $this->name, 
-            'order'      => $this->order, 
+            'order'     => $this->order, 
             'summary'   => $this->summary, 
             'url'       => $this->getUrl($request), 
             'images'    => $this->getFirstMediasWithConversions()->get('image'),
         ];
-    }
+    } 
 }
