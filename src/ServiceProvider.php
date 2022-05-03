@@ -78,8 +78,10 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
     protected function widgets()
     {
         Gutenberg::widgets([
+            Cypress\Widgets\CourseCategory::class,
             Cypress\Widgets\CourseDetail::class,
             Cypress\Widgets\CoursesCard::class,
+            Cypress\Widgets\IndexCategory::class,
             Cypress\Widgets\LessonDetail::class,
         ]);
     }
