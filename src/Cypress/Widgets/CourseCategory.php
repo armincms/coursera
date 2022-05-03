@@ -3,8 +3,9 @@
 namespace Armincms\Coursera\Cypress\Widgets; 
 
 use Armincms\Categorizable\Cypress\Widgets\SingleCategory;
+use Zareismail\Gutenberg\Cacheable;
 
-class CourseCategory extends SingleCategory
+class CourseCategory extends SingleCategory implements Cacheable
 {       
     /**
      * The logical group associated with the widget.

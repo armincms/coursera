@@ -3,8 +3,9 @@
 namespace Armincms\Coursera\Cypress\Widgets; 
 
 use Armincms\Categorizable\Cypress\Widgets\IndexCategory as Widget;
+use Zareismail\Gutenberg\Cacheable;
 
-class IndexCategory extends Widget
+class IndexCategory extends Widget implements Cacheable
 {       
     /**
      * The logical group associated with the widget.

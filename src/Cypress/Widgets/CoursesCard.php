@@ -8,10 +8,11 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;  
 use PhoenixLib\NovaNestedTreeAttachMany\NestedTreeAttachManyField as CategorySelect;
 use Zareismail\Cypress\Http\Requests\CypressRequest;
+use Zareismail\Gutenberg\Cacheable;
 use Zareismail\Gutenberg\Gutenberg; 
 use Zareismail\Gutenberg\GutenbergWidget; 
 
-class CoursesCard extends GutenbergWidget
+class CoursesCard extends GutenbergWidget implements Cacheable
 {         
     /**
      * The logical group associated with the widget.
