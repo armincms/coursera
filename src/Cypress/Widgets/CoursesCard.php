@@ -4,6 +4,7 @@ namespace Armincms\Coursera\Cypress\Widgets;
  
 use Armincms\Coursera\Nova\Course; 
 use Armincms\Coursera\Nova\CourseCategory; 
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;  
 use PhoenixLib\NovaNestedTreeAttachMany\NestedTreeAttachManyField as CategorySelect;
@@ -75,6 +76,9 @@ class CoursesCard extends GutenbergWidget implements Cacheable
                 ->rules('required', 'min:1')
                 ->help(__('Number of items that should be display.')), 
 
+            Boolean::make(__('Only subscribed'), 'config->subscribed')
+                ->default(false),
+
             CategorySelect::make(__('Choose some categories'), 'config->categories', CourseCategory::class)
                 ->useAsField()
                 ->required()
@@ -120,6 +124,11 @@ class CoursesCard extends GutenbergWidget implements Cacheable
         };
 
         return Course::newModel()->when($this->metaValue('categories'), $callback)
+            ->when($this->metaValue('subscribed'), function($query) {
+                $query->whereHas('subscribers', function($query) {
+                    $query->whereKey(optional($this->getRequest()->user())->getKey());
+                });
+            })
             ->when($this->metaValue('direction') == 'desc', function($query) {
                 $query->oldest($this->metaValue('ordering'));
             }, function($query) {
