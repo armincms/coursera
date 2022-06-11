@@ -1,14 +1,14 @@
 <?php
 
 namespace Armincms\Coursera\Cypress\Widgets;
- 
-use Laravel\Nova\Fields\Select; 
+
+use Laravel\Nova\Fields\Select;
 use Zareismail\Cypress\Http\Requests\CypressRequest;
 use Zareismail\Gutenberg\Gutenberg;
 use Zareismail\Gutenberg\GutenbergWidget;
 
 class LessonDetail extends GutenbergWidget
-{      
+{
     /**
      * Indicates if the widget should be shown on the component page.
      *
@@ -25,29 +25,42 @@ class LessonDetail extends GutenbergWidget
 
     /**
      * Bootstrap the resource for the given request.
-     * 
-     * @param  \Zareismail\Cypress\Http\Requests\CypressRequest $request 
-     * @param  \Zareismail\Cypress\Layout $layout 
-     * @return void                  
+     *
+     * @param  \Zareismail\Cypress\Http\Requests\CypressRequest $request
+     * @param  \Zareismail\Cypress\Layout $layout
+     * @return void
      */
     public function boot(CypressRequest $request, $layout)
-    {   
-        parent::boot($request, $layout); 
+    {
+        parent::boot($request, $layout);
 
         $this->withMeta([
             'resource' => $request->resolveFragment()->metaValue('resource')
         ]);
-    } 
+    }
 
     /**
      * Serialize the widget fro display.
-     * 
+     *
      * @return array
      */
     public function serializeForDisplay(): array
-    { 
+    {
         return (array) optional($this->metaValue('resource'))->serializeForWidget($this->getRequest());
-    } 
+    }
+
+    /**
+     * Prepare the resource for JSON serialization.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return array_merge(
+            parent::jsonSerialize(),
+            (array) optional($this->metaValue('resource'))->serializeForWidget($this->getRequest())
+        );
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -58,11 +71,11 @@ class LessonDetail extends GutenbergWidget
     public static function fields($request)
     {
         return [];
-    } 
+    }
 
     /**
      * Query related display templates.
-     * 
+     *
      * @return string
      */
     public static function relatableTemplates($request, $query)
