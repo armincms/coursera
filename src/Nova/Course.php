@@ -3,18 +3,20 @@
 namespace Armincms\Coursera\Nova;
 
 use Armincms\Categorizable\Nova\Category;
-use Illuminate\Http\Request; 
-use Laravel\Nova\Fields\BelongsTo; 
-use Laravel\Nova\Fields\HasMany; 
-use Laravel\Nova\Fields\ID;   
-use Laravel\Nova\Fields\Slug;  
-use Laravel\Nova\Fields\Text;  
-use Laravel\Nova\Fields\Textarea;  
-use Laravel\Nova\Panel;  
+use Armincms\Contract\Nova\User;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Slug;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Panel;
 use PhoenixLib\NovaNestedTreeAttachMany\NestedTreeAttachManyField as CategorySelect;
 
 class Course extends Resource
-{   
+{
     /**
      * The model the resource corresponds to.
      *
@@ -40,7 +42,7 @@ class Course extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(), 
+            ID::make()->sortable(),
 
             Text::make(__('Course Name'), 'name')
                 ->sortable()
@@ -74,7 +76,7 @@ class Course extends Resource
 
             Textarea::make(__('Course Summary'), 'summary')->hideFromIndex()->nullable(),
 
-            Panel::make(__('Course Description'), [ 
+            Panel::make(__('Course Description'), [
 
                 $this->resourceEditor(__('Course Content'), 'content')->nullable(),
 
@@ -82,6 +84,8 @@ class Course extends Resource
             ]),
 
             HasMany::make(__('Course Episodes'), 'episodes', Episode::class),
+
+            BelongsToMany::make(__('Course Subscribers'), 'subscribers', User::class),
         ];
-    }  
+    }
 }

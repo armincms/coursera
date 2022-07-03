@@ -2,23 +2,24 @@
 
 namespace Armincms\Coursera\Models;
 
-use Armincms\Contract\Concerns\Authorizable; 
+use Armincms\Contract\Concerns\Authorizable;
 use Armincms\Contract\Concerns\HasHits;
 use Armincms\Contract\Concerns\InteractsWithFragments;
 use Armincms\Contract\Concerns\InteractsWithMedia;
 use Armincms\Contract\Concerns\InteractsWithMeta;
-use Armincms\Contract\Concerns\InteractsWithUri; 
+use Armincms\Contract\Concerns\InteractsWithUri;
 use Armincms\Contract\Concerns\InteractsWithWidgets;
 use Armincms\Contract\Concerns\Sluggable;
 use Armincms\Contract\Contracts\Authenticatable;
 use Armincms\Contract\Contracts\HasMedia;
 use Armincms\Contract\Contracts\HasMeta;
 use Armincms\Contract\Contracts\Hitsable;
-use Illuminate\Database\Eloquent\Model; 
-use Illuminate\Database\Eloquent\SoftDeletes; 
+use Armincms\Orderable\Contracts\Salable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatable, HasMeta
-{    
+class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatable, HasMeta, Salable
+{
     use Authorizable;
     use HasHits;
     use InteractsWithFragments;
@@ -26,46 +27,46 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     use InteractsWithMeta;
     use InteractsWithUri;
     use InteractsWithWidgets;
-    use SoftDeletes;    
-    use Sluggable;    
-    
+    use SoftDeletes;
+    use Sluggable;
+
     /**
      * Query related CourseraEpisode.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relatinos\HasOneOrMany
      */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    
+
     /**
      * Query related CourseraEpisode.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relatinos\HasOneOrMany
      */
     public function episodes()
     {
         return $this->hasMany(CourseraEpisode::class, 'course_id');
     }
-    
+
     /**
      * Query related CourseraServer.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relatinos\BelongsTo
      */
     public function subscribers()
     {
         return $this->belongsToMany(
-            config('auth.providers.users.model'), 
+            config('auth.providers.users.model'),
             'coursera_subscriptions'
         );
-    } 
+    }
 
     /**
      * Subscribe given user to the course.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Model $user 
+     *
+     * @param  \Illuminate\Database\Eloquent\Model $user
      * @return mixed
      */
     public function subscribe($user)
@@ -75,9 +76,9 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
 
     /**
      * Determin that given user subscribed to the course.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Model $user 
-     * @return boolean       
+     *
+     * @param  \Illuminate\Database\Eloquent\Model $user
+     * @return boolean
      */
     public function subscribed($user = null)
     {
@@ -86,8 +87,8 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
 
     /**
      * Get the corresponding cypress fragment.
-     * 
-     * @return 
+     *
+     * @return
      */
     public function cypressFragment(): string
     {
@@ -127,5 +128,55 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
             'category'  => (array) optional($this->category)->serializeForIndexWidget($request),
             'images'    => $this->getFirstMediasWithConversions()->get('image'),
         ];
+    }
+
+    /**
+     * Get the sale price currency.
+     *
+     * @return decimal
+     */
+    public function saleCurrency(): string
+    {
+        return 'IRR';
+    }
+
+    /**
+     * Get the sale price of the item.
+     *
+     * @return decimal
+     */
+    public function salePrice(): float
+    {
+        return floatval($this->price);
+    }
+
+    /**
+     * Get the real price of the item.
+     *
+     * @return decimal
+     */
+    public function oldPrice(): float
+    {
+        return $this->salePrice();
+    }
+
+    /**
+     * Get the item name.
+     *
+     * @return decimal
+     */
+    public function saleName(): string
+    {
+        return strval($this->name);
+    }
+
+    /**
+     * Get the item description.
+     *
+     * @return decimal
+     */
+    public function saleDescription(): string
+    {
+        return strval($this->summary);
     }
 }

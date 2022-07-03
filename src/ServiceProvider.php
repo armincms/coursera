@@ -2,24 +2,23 @@
 
 namespace Armincms\Coursera;
 
-use Illuminate\Contracts\Support\DeferrableProvider;  
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider; 
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Laravel\Nova\Nova as LaravelNova;
 use Zareismail\Gutenberg\Gutenberg;
 
-class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
-{ 
+class ServiceProvider extends AuthServiceProvider
+{
     /**
      * The policy mappings for the application.
      *
      * @var array
      */
     protected $policies = [
-        Models\Course::class => Policies\Course::class, 
-        Models\Episode::class => Policies\Episode::class, 
-        Models\Lesson::class => Policies\Lesson::class, 
-        Models\Link::class => Policies\Link::class, 
-        Models\Server::class => Policies\Server::class, 
+        Models\Course::class => Policies\Course::class,
+        Models\Episode::class => Policies\Episode::class,
+        Models\Lesson::class => Policies\Lesson::class,
+        Models\Link::class => Policies\Link::class,
+        Models\Server::class => Policies\Server::class,
     ];
 
     /**
@@ -29,7 +28,7 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
      */
     public function register()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations'); 
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->registerPolicies();
         // $this->conversions();
         $this->resources();
@@ -38,6 +37,7 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
         $this->widgets();
         $this->templates();
         // $this->menus();
+        \Event::subscribe(Listeners\Order::class);
     }
 
     /**
@@ -46,14 +46,14 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
      * @return void
      */
     protected function resources()
-    { 
+    {
         LaravelNova::resources([
-            Nova\Course::class, 
-            Nova\CourseCategory::class, 
-            Nova\Episode::class, 
-            Nova\Lesson::class, 
-            Nova\Link::class, 
-            Nova\Server::class, 
+            Nova\Course::class,
+            Nova\CourseCategory::class,
+            Nova\Episode::class,
+            Nova\Lesson::class,
+            Nova\Link::class,
+            Nova\Server::class,
         ]);
     }
 
@@ -63,7 +63,7 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
      * @return void
      */
     protected function fragments()
-    {   
+    {
         Gutenberg::fragments([
             Cypress\Fragments\CourseDetail::class,
             Cypress\Fragments\LessonDetail::class,
@@ -92,34 +92,11 @@ class ServiceProvider extends AuthServiceProvider implements DeferrableProvider
      * @return void
      */
     protected function templates()
-    {   
-        Gutenberg::templates([ 
+    {
+        Gutenberg::templates([
             \Armincms\Coursera\Gutenberg\Templates\CourseDetail::class,
             \Armincms\Coursera\Gutenberg\Templates\CoursesCard::class,
             \Armincms\Coursera\Gutenberg\Templates\LessonDetail::class,
         ]);
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [];
-    }
-
-    /**
-     * Get the events that trigger this service provider to register.
-     *
-     * @return array
-     */
-    public function when()
-    {
-        return [
-            \Illuminate\Console\Events\ArtisanStarting::class,
-            \Laravel\Nova\Events\ServingNova::class,
-        ];
     }
 }
