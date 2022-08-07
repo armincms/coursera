@@ -53,7 +53,8 @@ class Course extends Resource
                 ->sortable()
                 ->nullable()
                 ->from('name')
-                ->hideFromIndex(),
+                ->hideFromIndex()
+                ->rules('unique:coursera_courses,slug,{{resourceId}}'),
 
             $this->resourceUrls(),
 

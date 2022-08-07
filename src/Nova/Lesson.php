@@ -1,21 +1,21 @@
 <?php
 
 namespace Armincms\Coursera\Nova;
- 
-use Illuminate\Http\Request;  
-use Laravel\Nova\Fields\BelongsTo; 
-use Laravel\Nova\Fields\Boolean; 
-use Laravel\Nova\Fields\HasMany; 
-use Laravel\Nova\Fields\ID;       
-use Laravel\Nova\Fields\Number;   
-use Laravel\Nova\Fields\Select;  
-use Laravel\Nova\Fields\Slug;  
-use Laravel\Nova\Fields\Text;  
-use Laravel\Nova\Fields\Textarea;   
-use Whitecube\NovaFlexibleContent\Flexible;   
+
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Slug;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Whitecube\NovaFlexibleContent\Flexible;
 
 class Lesson extends Resource
-{   
+{
     /**
      * The model the resource corresponds to.
      *
@@ -41,7 +41,7 @@ class Lesson extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(), 
+            ID::make()->sortable(),
 
             BelongsTo::make(__('Coursera Episode'), 'episode', Episode::class)
                 ->required()
@@ -58,7 +58,8 @@ class Lesson extends Resource
                 ->sortable()
                 ->nullable()
                 ->from('name')
-                ->hideFromIndex(),  
+                ->hideFromIndex()
+                ->rules('unique:coursera_lessons,slug,{{resourceId}}'),
 
             $this->resourceUrls(),
 
@@ -87,13 +88,13 @@ class Lesson extends Resource
                 ->onlyOnForms()
                 ->button(__('Coursera Add Link'))
                 ->addLayout('Coursera Media Link', 'items', [
-                    
+
                     Select::make(__('Coursera Server'), 'server_id')
-                        ->options(Server::newModel()->get()->pluck('name', 'id')) 
+                        ->options(Server::newModel()->get()->pluck('name', 'id'))
                         ->required()
                         ->rules('required')
                         ->displayUsingLabels(),
-                    
+
                     Select::make(__('Coursera Resolution'), 'resolution')
                         ->options($resolutions = forward_static_call([
                             Link::newModel(), 'resolutions'
@@ -114,10 +115,10 @@ class Lesson extends Resource
                         ->sortable()
                         ->required()
                         ->rules('required')
-                        ->hideFromIndex(), 
+                        ->hideFromIndex(),
                 ]),
 
             HasMany::make(__('Coursera Links'), 'links', Link::class),
         ];
-    }  
+    }
 }
