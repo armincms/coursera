@@ -81,7 +81,7 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
         $course = data_get($this->episode, 'course');
 
         return array_merge($this->serializeForIndexWidget($request), [
-            'subscribed'=> $subscribed = optional($course)->subscribed($request),
+            'subscribed'=> $this->isFree() || $subscribed = optional($course)->subscribed($request->user()),
             'isFree'    => $this->isFree(),
             'episode'   => optional($this->episode)->serializeForDetailWidget($request),
             'course'    => optional($course)->serializeForDetailWidget($request),
