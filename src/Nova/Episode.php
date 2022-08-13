@@ -1,17 +1,17 @@
 <?php
 
 namespace Armincms\Coursera\Nova;
- 
-use Illuminate\Http\Request;  
-use Laravel\Nova\Fields\BelongsTo; 
-use Laravel\Nova\Fields\HasMany; 
-use Laravel\Nova\Fields\ID;   
-use Laravel\Nova\Fields\Number;   
-use Laravel\Nova\Fields\Text;  
-use Laravel\Nova\Fields\Textarea;      
+
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 
 class Episode extends Resource
-{   
+{
     /**
      * The model the resource corresponds to.
      *
@@ -37,10 +37,11 @@ class Episode extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(), 
+            ID::make()->sortable(),
 
             BelongsTo::make(__('Coursera Course'), 'course', Course::class)
                 ->required()
+                ->sortable()
                 ->rules('required')
                 ->withoutTrashed()
                 ->showCreateRelationButton(),
@@ -48,10 +49,11 @@ class Episode extends Resource
             Text::make(__('Episode Name'), 'name')
                 ->sortable()
                 ->required()
-                ->rules('required'), 
+                ->rules('required'),
 
             Number::make(__('Episode Order'), 'order')
                 ->required()
+                ->sortable()
                 ->rules('required')
                 ->min(0)
                 ->max(99),
@@ -62,5 +64,5 @@ class Episode extends Resource
 
             HasMany::make(__('Coursera Lessons'), 'lessons', Lesson::class),
         ];
-    }  
+    }
 }
