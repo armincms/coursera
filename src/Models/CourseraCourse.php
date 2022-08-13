@@ -38,7 +38,7 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     protected static function booted()
     {
         static::deleting(function($model) {
-            if ($model->isForceDeleting()) {
+            if (! $model->isForceDeleting()) {
                 $model->episodes()->get()->each->delete();
             } else {
                 $model->episodes()->get()->each->forceDelete();

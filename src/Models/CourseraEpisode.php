@@ -25,7 +25,7 @@ class CourseraEpisode extends Model implements Authenticatable, HasMedia
     protected static function booted()
     {
         static::deleting(function($model) {
-            if ($model->isForceDeleting()) {
+            if (! $model->isForceDeleting()) {
                 $model->lessons()->get()->each->delete();
             } else {
                 $model->lessons()->get()->each->forceDelete();
