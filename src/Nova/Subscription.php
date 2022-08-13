@@ -50,7 +50,7 @@ class Subscription extends Resource
                 ->required()
                 ->readonly()
                 ->displayUsing(function($user) {
-                    return $user->fullname() ?: $user->name;
+                    return trim($user->fullname()) ?: $user->name;
                 }),
 
             $this->dateField(__('Subscribed At'), 'created_at')->nullable(),
