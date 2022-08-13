@@ -104,7 +104,9 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     {
         if (! $this->subscribed($user))  {
             return [
-                'subscribed' : false
+                'subscribed' : false,
+                'imei' => null,
+                'subscribed_at' => null,
             ];
         }
 
@@ -114,6 +116,7 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
             [
                 'subscribed_at' => data_get($subscriber, 'pivot.created_at'),
                 'subscribed' => true,
+                'imei' => null,
             ],
             (array) data_get($subscriber, 'pivot.config')
         );
