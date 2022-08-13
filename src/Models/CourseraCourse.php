@@ -102,12 +102,19 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
      */
     public function getSubscription($user = null): array
     {
-        if (! $this->subscribed($user)) return [];
+        if (! $this->subscribed($user))  {
+            return [
+                'subscribed' : false
+            ];
+        }
 
         $subscriber = $this->subscribers->find($user);
 
         return array_merge(
-            [ 'subscribed_at' => data_get($subscriber, 'pivot.created_at') ],
+            [
+                'subscribed_at' => data_get($subscriber, 'pivot.created_at'),
+                'subscribed' => true,
+            ],
             (array) data_get($subscriber, 'pivot.config')
         );
     }
