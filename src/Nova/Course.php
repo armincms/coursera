@@ -7,8 +7,10 @@ use Armincms\Contract\Nova\User;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
@@ -86,7 +88,18 @@ class Course extends Resource
 
             HasMany::make(__('Course Episodes'), 'episodes', Episode::class),
 
-            BelongsToMany::make(__('Course Subscribers'), 'subscribers', User::class),
+            BelongsToMany::make(__('Course Subscribers'), 'subscribers', User::class)
+                ->fields(function() {
+                    return [
+                        DateTime::make(__('Subscribtion Time'), 'created_at')
+                            ->nullable(),
+
+                        KeyValue::make(__('Subscribtion Detail'), 'config')
+                            ->nullable()
+                            ->default([])
+                            ->hideFromIndex(),
+                    ];
+                }),
         ];
     }
 

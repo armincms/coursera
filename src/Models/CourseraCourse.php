@@ -79,18 +79,37 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
         return $this->belongsToMany(
             config('auth.providers.users.model'),
             'coursera_subscriptions'
-        );
+        )->withPivot('config', 'created_at')->using(Pivot::class);
     }
 
     /**
      * Subscribe given user to the course.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $user
+     * @param \Illuminate\Database\Eloquent\Model $user
+     * @param array $config
      * @return mixed
      */
-    public function subscribe($user)
+    public function subscribe($user, $config = [])
     {
-        return $this->subscribers()->attach($user);
+        return $this->subscribers()->attach($user, compact('config'));
+    }
+
+    /**
+     * Get subscription detail.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $user
+     * @return array
+     */
+    public function getSubscription($user = null): array
+    {
+        if (! $this->subscribed($user)) return [];
+
+        $subscriber = $this->subscribers->find($user);
+
+        return array_merge(
+            [ 'subscribed_at' => data_get($subscriber, 'pivot.created_at') ],
+            (array) data_get($subscriber, 'pivot.config')
+        );
     }
 
     /**
@@ -123,6 +142,7 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     public function serializeForDetailWidget($request)
     {
         return array_merge($this->serializeForIndexWidget($request), [
+            'subscription' => $this->getSubscription($request->user()),
             'subscribed'=> $this->subscribed($request->user()),
             'content'   => $this->content,
             'episodes'  => $this->episodes->map->serializeForWidget($request)->toArray(),
@@ -144,8 +164,10 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
             'summary'   => $this->summary,
             'url'       => $this->getUrl($request),
             'hits'      => $this->hits,
-            'category'  => (array) optional($this->category)->serializeForIndexWidget($request),
             'images'    => $this->getFirstMediasWithConversions()->get('image'),
+            'category'  => (array) optional($this->category)->serializeForIndexWidget(
+                $request
+            ),
         ];
     }
 

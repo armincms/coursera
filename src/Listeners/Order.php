@@ -16,7 +16,9 @@ class Order
         }
 
         $event->order->loadMissing('items.salable')->items->each(function($item) {
-            $item->salable->subscribe(data_get($item, 'detail.user'));
+            $item->salable->subscribe(data_get($item, 'detail.user'), [
+                'imei' => data_get($item, 'detail.imei')
+            ]);
         });
     }
 
