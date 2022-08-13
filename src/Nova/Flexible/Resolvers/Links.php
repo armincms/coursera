@@ -39,25 +39,28 @@ class Links implements ResolverInterface
      */
     public function set($model, $attribute, $groups)
     {
-        $class = get_class($model); 
+        $class = get_class($model);
 
         $class::saved(function ($model) use ($groups) {
-            $groups->each(function($group, $index) use ($model) { 
+            $groups->each(function($group, $index) use ($model) {
                 $callback = function() use ($model, $group, $index) {
+                    $attributes = [
+                        'order' =>  $index,
+                        'server_id' => data_get($group->getAttributes(), 'server_id'),
+                        'path' => data_get($group->getAttributes(), 'path'),
+                        'locale' => data_get($group->getAttributes(), 'locale'),
+                        'resolution' => data_get($group->getAttributes(), 'resolution'),
+                    ];
+                    $id = data_get($group->getAttributes(), 'id');
+
                     $model->links()->updateOrCreate(
-                        [ 'id' => data_get($group->getAttributes(), 'id') ], 
-                        [
-                            'order' =>  $index,
-                            'server_id' => data_get($group->getAttributes(), 'server_id'),
-                            'path' => data_get($group->getAttributes(), 'path'),
-                            'locale' => data_get($group->getAttributes(), 'locale'),
-                            'resolution' => data_get($group->getAttributes(), 'resolution'), 
-                        ] 
-                    ); 
+                        $id ? compact('id') : $attributes,
+                        $id ? $attributes : []
+                    );
                 };
 
                 forward_static_call([Link::newModel(), 'unguarded'], $callback);
-            }); 
+            });
         });
     }
 }
