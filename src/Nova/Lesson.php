@@ -122,4 +122,17 @@ class Lesson extends Resource
             HasMany::make(__('Coursera Links'), 'links', Link::class),
         ];
     }
+
+    /**
+     * Get the actions available on the entity.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function actions(Request $request)
+    {
+        return [
+            Actions\RefreshSlugs::make(),
+        ];
+    }
 }
