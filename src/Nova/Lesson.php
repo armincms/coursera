@@ -132,7 +132,7 @@ class Lesson extends Resource
     public function actions(Request $request)
     {
         return [
-            Actions\RefreshSlugs::make(),
+            \Armincms\Contract\Nova\Actions\RebuildSlug::make(),
         ];
     }
 }
