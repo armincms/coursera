@@ -45,6 +45,7 @@ class Lesson extends Resource
 
             BelongsTo::make(__('Coursera Episode'), 'episode', Episode::class)
                 ->required()
+                ->sortable()
                 ->rules('required')
                 ->withoutTrashed()
                 ->showCreateRelationButton(),
