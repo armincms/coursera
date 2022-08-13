@@ -38,7 +38,7 @@ class Subscriber extends Filter
     {
         return User::newModel()->get()->map(function($user) {
             return [
-                'name' => $user->fullname(),
+                'name' => $user->fullname() ?? $user->name,
                 'value' => $user->getKey(),
             ];
         });
