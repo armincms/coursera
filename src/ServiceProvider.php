@@ -54,6 +54,7 @@ class ServiceProvider extends AuthServiceProvider
             Nova\Lesson::class,
             Nova\Link::class,
             Nova\Server::class,
+            Nova\Subscription::class,
         ]);
     }
 

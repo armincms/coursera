@@ -91,8 +91,7 @@ class Course extends Resource
             BelongsToMany::make(__('Course Subscribers'), 'subscribers', User::class)
                 ->fields(function() {
                     return [
-                        DateTime::make(__('Subscribtion Time'), 'created_at')
-                            ->nullable(),
+                        $this->dateField(__('Subscribed At'), 'created_at')->nullable(),
 
                         KeyValue::make(__('Subscribtion Detail'), 'config')
                             ->nullable()

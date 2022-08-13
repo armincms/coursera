@@ -79,7 +79,7 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
         return $this->belongsToMany(
             config('auth.providers.users.model'),
             'coursera_subscriptions'
-        )->withPivot('config', 'created_at')->using(Pivot::class);
+        )->withPivot('config', 'created_at')->using(Subscription::class);
     }
 
     /**
