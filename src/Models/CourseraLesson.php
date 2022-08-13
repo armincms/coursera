@@ -30,6 +30,25 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
     use Sluggable;
 
     /**
+     * Perform any actions required after the model boots.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::deleting(function($model) {
+            if (! $model->isForceDeleting()) {
+                $model->links()->delete();
+            } else {
+                $model->links()->forceDelete();
+            }
+        });
+        static::restored(function($model) {
+            $model->links()->onlyTrashed()->restore();
+        });
+    }
+
+    /**
      * Query related CourseraEpisode.
      *
      * @return \Illuminate\Database\Eloquent\Relatinos\BelongsTo
