@@ -104,7 +104,7 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     {
         if (! $this->subscribed($user))  {
             return [
-                'subscribed' : false,
+                'subscribed' => false,
                 'imei' => null,
                 'subscribed_at' => null,
             ];
