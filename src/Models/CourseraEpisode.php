@@ -2,34 +2,53 @@
 
 namespace Armincms\Coursera\Models;
 
-use Armincms\Contract\Concerns\Authorizable;  
-use Armincms\Contract\Concerns\InteractsWithMedia; 
-use Armincms\Contract\Concerns\InteractsWithWidgets; 
+use Armincms\Contract\Concerns\Authorizable;
+use Armincms\Contract\Concerns\InteractsWithMedia;
+use Armincms\Contract\Concerns\InteractsWithWidgets;
 use Armincms\Contract\Contracts\Authenticatable;
-use Armincms\Contract\Contracts\HasMedia;  
-use Illuminate\Database\Eloquent\Model; 
-use Illuminate\Database\Eloquent\SoftDeletes; 
+use Armincms\Contract\Contracts\HasMedia;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CourseraEpisode extends Model implements Authenticatable, HasMedia
-{    
-    use Authorizable; 
-    use InteractsWithMedia; 
-    use InteractsWithWidgets; 
-    use SoftDeletes;       
-    
+{
+    use Authorizable;
+    use InteractsWithMedia;
+    use InteractsWithWidgets;
+    use SoftDeletes;
+
+    /**
+     * Perform any actions required after the model boots.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::deleting(function($model) {
+            if ($model->isForceDeleting()) {
+                $model->lessons()->get()->each->delete();
+            } else {
+                $model->lessons()->get()->each->forceDelete();
+            }
+        });
+        static::restored(function($model) {
+            $model->lessons()->onlyTrashed()->restore();
+        });
+    }
+
     /**
      * Query related CourseraLesson.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relatinos\BelongsTo
      */
     public function course()
     {
         return $this->belongsTo(CourseraCourse::class);
     }
-    
+
     /**
      * Query related CourseraLesson.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relatinos\HasOneOrMany
      */
     public function lessons()
@@ -45,7 +64,7 @@ class CourseraEpisode extends Model implements Authenticatable, HasMedia
     public function serializeForDetailWidget($request)
     {
         return array_merge($this->serializeForIndexWidget($request), [
-            'lessons' => $this->lessons->map->serializeForIndexWidget($request)->toArray(), 
+            'lessons' => $this->lessons->map->serializeForIndexWidget($request)->toArray(),
         ]);
     }
 
@@ -59,8 +78,8 @@ class CourseraEpisode extends Model implements Authenticatable, HasMedia
     {
         return [
             'id'        => $this->getKey(),
-            'name'      => $this->name,  
-            'order'   => $this->order, 
+            'name'      => $this->name,
+            'order'   => $this->order,
         ];
     }
 }

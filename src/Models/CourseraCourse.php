@@ -31,6 +31,28 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
     use Sluggable;
 
     /**
+     * Perform any actions required after the model boots.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::deleting(function($model) {
+            if ($model->isForceDeleting()) {
+                $model->episodes()->get()->each->delete();
+            } else {
+                $model->episodes()->get()->each->forceDelete();
+            }
+        });
+        static::forceDeleted(function($model) {
+            $model->episodes()->get()->each->forceDeleted();
+        });
+        static::restoring(function($model) {
+            $model->episodes()->onlyTrashed()->get()->each->restore();
+        });
+    }
+
+    /**
      * Query related CourseraEpisode.
      *
      * @return \Illuminate\Database\Eloquent\Relatinos\HasOneOrMany
