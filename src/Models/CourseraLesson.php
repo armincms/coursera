@@ -40,7 +40,7 @@ class CourseraLesson extends Model implements Authenticatable, HasMedia, Hitsabl
             if (! $model->isForceDeleting()) {
                 $model->links()->delete();
             } else {
-                $model->links()->forceDelete();
+                $model->links()->withTrashed()->forceDelete();
             }
         });
         static::restored(function($model) {

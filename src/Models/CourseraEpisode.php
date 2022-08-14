@@ -28,7 +28,7 @@ class CourseraEpisode extends Model implements Authenticatable, HasMedia
             if (! $model->isForceDeleting()) {
                 $model->lessons()->get()->each->delete();
             } else {
-                $model->lessons()->get()->each->forceDelete();
+                $model->lessons()->withTrashed()->get()->each->forceDelete();
             }
         });
         static::restored(function($model) {

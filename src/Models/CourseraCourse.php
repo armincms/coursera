@@ -41,7 +41,8 @@ class CourseraCourse extends Model implements HasMedia, Hitsable, Authenticatabl
             if (! $model->isForceDeleting()) {
                 $model->episodes()->get()->each->delete();
             } else {
-                $model->episodes()->get()->each->forceDelete();
+                $model->episodes()->withTrashed()->get()->each->forceDelete();
+                $model->subscribers()->sync([]);
             }
         });
         static::restoring(function($model) {
